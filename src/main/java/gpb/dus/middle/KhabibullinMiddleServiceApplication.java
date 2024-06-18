@@ -1,4 +1,4 @@
-package gpb.dus.khabibullin_middle_service;
+package gpb.dus.middle;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
