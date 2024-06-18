@@ -1,4 +1,4 @@
-package gpb.dus.khabibullin_middle_service;
+package gpb.dus.middle;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
