@@ -1,5 +1,8 @@
 package gpb.dus.middle.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +26,10 @@ public abstract class BaseClient {
         return makeAndSendRequest(HttpMethod.GET, path, null);
     }
 
+    protected <T> List<T> getList(String path, Class<T> cls) {
+        return makeAndSendRequestForList(path, cls);
+    }
+
     protected <T> ResponseEntity<Object> post(String path, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, body);
     }
@@ -39,6 +46,20 @@ public abstract class BaseClient {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
         return manageMiddleServiceResponse(backendServiceResponse);
+    }
+
+    private <T> List<T> makeAndSendRequestForList(String path, Class<T> cls) {
+        ObjectMapper mapper = new ObjectMapper();
+        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, cls);
+        return rest.<List<T>>exchange(path, HttpMethod.GET, null, ParameterizedTypeReference.forType(type)).getBody();
+    }
+
+
+    public static <T> List<T> getForList(RestTemplate restTemplate, String url, Class<T> cls) {
+        ObjectMapper mapper = new ObjectMapper();
+        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, cls);
+        return restTemplate.<List<T>>exchange(url, HttpMethod.GET, null, ParameterizedTypeReference.forType(type))
+                .getBody();
     }
 
     private HttpHeaders defaultHeaders() {
