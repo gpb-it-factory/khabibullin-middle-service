@@ -11,7 +11,7 @@ tags:
     description: Операции, связанные с переводами между счетами
 
 paths:
-  /v2/users:
+  /middle/v2/users:
     post:
       operationId: createUserV2
       summary: Создать нового пользователя (v2)
@@ -36,7 +36,48 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnprocessableEntity'
+                $ref: '#/components/schemas/Conflict'
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorV2'
+  /middle/v2/users/{id}/accounts:
+    post:
+      operationId: createUserAccountV2
+      summary: Открыть новый счёт для пользователя (V2)
+      tags: [ accounts ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 356789
+          description: Идентификатор пользователя в Telegram
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequestV2'
+      responses:
+        '204':
+          description: Счёт создан
+        '409':
+          description: Такой счет у данного пользователя уже есть
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conflict'
+        '401':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
         default:
           description: Непредвиденная ошибка
           content:
@@ -54,7 +95,6 @@ components:
           description: Идентификатор пользователя в Telegram
           type: integer
           format: int64
-
           example: 348741706
         userName:
           description: Username пользователя в Telegram
@@ -64,6 +104,47 @@ components:
       required:
         - userId
         - userName
+    CreateAccountRequestV2:
+      type: object
+      description: Запрос на создание нового счёта (V2)
+      properties:
+        accountName:
+          type: string
+          example: 'My first awesome account'
+      required:
+        - accountName
+    UserResponseV2:
+      type: object
+      description: Информация о пользователе (V2)
+      properties:
+        userId:
+          description: Идентификатор пользователя в backend-сервисе
+          type: string
+          format: uuid
+          example: 2d7b7a7a-680e-422e-9cc3-23c68e2ff398
+      required:
+        - userId
+    AccountsListResponseV2:
+      type: array
+      description: Список счетов пользователя (V2)
+      items:
+        type: object
+        properties:
+          accountId:
+            type: string
+            format: uuid
+            example: 52d2ef91-0b62-4d43-bb56-e7ec542ba8f8
+          accountName:
+            type: string
+            example: 'Деньги на шашлык'
+          amount:
+            type: string
+            format: number
+            example: '203605.20'
+        required:
+          - accountId
+          - accountName
+          - amount
     ErrorV2:
       type: object
       description: Формат непредвиденной ошибки (V2)
@@ -86,12 +167,17 @@ components:
         - type
         - code
         - traceId
+    Unauthorized:
+      type: object
+      description: Пользователь не найден
+      allOf:
+        - $ref: '#/components/schemas/ErrorV2'
     BadRequest:
       type: object
       description: Некорректные параметры запроса
       allOf:
         - $ref: '#/components/schemas/ErrorV2'
-    UnprocessableEntity:
+    Conflict:
       type: object
       description: Невозможно обработать запрос
       allOf:
