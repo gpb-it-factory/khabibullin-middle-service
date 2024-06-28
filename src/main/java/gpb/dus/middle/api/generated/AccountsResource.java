@@ -5,10 +5,10 @@
  */
 package gpb.dus.middle.api.generated;
 
-import gpb.dus.middle.api.generated.model.BadRequestApi;
 import gpb.dus.middle.api.generated.model.ConflictApi;
-import gpb.dus.middle.api.generated.model.CreateUserRequestV2Api;
+import gpb.dus.middle.api.generated.model.CreateAccountRequestV2Api;
 import gpb.dus.middle.api.generated.model.ErrorV2Api;
+import gpb.dus.middle.api.generated.model.UnauthorizedApi;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,29 +37,30 @@ import jakarta.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
 @Validated
-@Tag(name = "users", description = "Операции с пользователями")
-public interface UsersResource {
+@Tag(name = "accounts", description = "Операции со счетами пользователей")
+public interface AccountsResource {
 
     /**
-     * POST /middle/v2/users : Создать нового пользователя (v2)
+     * POST /middle/v2/users/{id}/accounts : Открыть новый счёт для пользователя (V2)
      *
-     * @param createUserRequestV2Api  (required)
-     * @return Пользователь создан (status code 204)
-     *         or Некорректный запрос (status code 400)
-     *         or Пользователь уже зарегистрирован (status code 409)
+     * @param id Идентификатор пользователя в Telegram (required)
+     * @param createAccountRequestV2Api  (required)
+     * @return Счёт создан (status code 204)
+     *         or Такой счет у данного пользователя уже есть (status code 409)
+     *         or Пользователь не найден (status code 401)
      *         or Непредвиденная ошибка (status code 200)
      */
     @Operation(
-        operationId = "createUserV2",
-        summary = "Создать нового пользователя (v2)",
-        tags = { "users" },
+        operationId = "createUserAccountV2",
+        summary = "Открыть новый счёт для пользователя (V2)",
+        tags = { "accounts" },
         responses = {
-            @ApiResponse(responseCode = "204", description = "Пользователь создан"),
-            @ApiResponse(responseCode = "400", description = "Некорректный запрос", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestApi.class))
-            }),
-            @ApiResponse(responseCode = "409", description = "Пользователь уже зарегистрирован", content = {
+            @ApiResponse(responseCode = "204", description = "Счёт создан"),
+            @ApiResponse(responseCode = "409", description = "Такой счет у данного пользователя уже есть", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ConflictApi.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "Пользователь не найден", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = UnauthorizedApi.class))
             }),
             @ApiResponse(responseCode = "default", description = "Непредвиденная ошибка", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorV2Api.class))
@@ -68,13 +69,14 @@ public interface UsersResource {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/middle/v2/users",
+        value = "/middle/v2/users/{id}/accounts",
         produces = { "application/json" },
         consumes = { "application/json" }
     )
     
-    ResponseEntity<Void> createUserV2(
-        @Parameter(name = "CreateUserRequestV2Api", description = "", required = true) @Valid @RequestBody CreateUserRequestV2Api createUserRequestV2Api
+    ResponseEntity<Void> createUserAccountV2(
+        @Parameter(name = "id", description = "Идентификатор пользователя в Telegram", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id,
+        @Parameter(name = "CreateAccountRequestV2Api", description = "", required = true) @Valid @RequestBody CreateAccountRequestV2Api createAccountRequestV2Api
     );
 
 }

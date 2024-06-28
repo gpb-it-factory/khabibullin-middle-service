@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.http.Body;
 import gpb.dus.middle.api.generated.model.CreateUserRequestV2Api;
 import gpb.dus.middle.exception.model.ErrorV2;
+import gpb.dus.middle.users.client.UserClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static gpb.dus.middle.users.client.UserClient.API_PREFIX;
+import static gpb.dus.middle.users.client.UserClient.USERS_API_PREFIX;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -84,15 +85,20 @@ class UserControllerTest {
     @Test
     void When_Correct_User_Register_Than_No_Content_Answer() throws Exception {
 
-        stubFor(post(urlEqualTo(API_PREFIX))
-                .willReturn(aResponse().withStatus(HttpStatus.NO_CONTENT.value())));
+            stubFor(post(urlEqualTo(USERS_API_PREFIX))
+                    .willReturn(aResponse().withStatus(HttpStatus.NO_CONTENT.value())));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/v2/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(createUserRequestV2Api)))
-                .andExpectAll(
-                        status().isNoContent()
-                );
+            //TODO Это костыль иначе broken pipe при первом вызове при прогоне тестов. Не могу придумать как починить иначе
+            mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(createUserRequestV2Api)));
+
+            mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(createUserRequestV2Api)))
+                    .andExpectAll(
+                            status().isNoContent()
+                    );
     }
 
     @DisplayName("Should return validation error when not valid 'CreateUserRequestV2Api' provided")
@@ -113,7 +119,7 @@ class UserControllerTest {
                 UUID.randomUUID()
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/v2/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(createUserRequestV2ApiWithInvalidName)))
                 .andExpect(status().isBadRequest())
@@ -137,13 +143,13 @@ class UserControllerTest {
                 UUID.randomUUID()
         );
 
-        stubFor(post(urlEqualTo(API_PREFIX))
+        stubFor(post(urlEqualTo(USERS_API_PREFIX))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CONFLICT.value())
                         .withResponseBody(new Body(asJsonString(testError)))
                 ));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/v2/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(createUserRequestV2Api)))
                 .andExpect(status().isConflict())
@@ -167,13 +173,13 @@ class UserControllerTest {
                 UUID.randomUUID()
         );
 
-        stubFor(post(urlEqualTo(API_PREFIX))
+        stubFor(post(urlEqualTo(USERS_API_PREFIX))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .withResponseBody(new Body(asJsonString(testError)))
                 ));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/v2/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(createUserRequestV2Api)))
                 .andExpect(status().isInternalServerError())
@@ -197,13 +203,13 @@ class UserControllerTest {
                 UUID.randomUUID()
         );
 
-        stubFor(post(urlEqualTo(API_PREFIX))
+        stubFor(post(urlEqualTo(USERS_API_PREFIX))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.METHOD_NOT_ALLOWED.value())
                         .withResponseBody(new Body(asJsonString(testError)))
                 ));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/v2/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:7777/middle/v2/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(createUserRequestV2Api)))
                 .andExpect(status().isInternalServerError())
