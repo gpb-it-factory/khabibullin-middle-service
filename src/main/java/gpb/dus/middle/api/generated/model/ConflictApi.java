@@ -16,13 +16,13 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * Некорректные параметры запроса
+ * Невозможно обработать запрос
  */
 
-@Schema(name = "BadRequest", description = "Некорректные параметры запроса")
-@JsonTypeName("BadRequest")
+@Schema(name = "Conflict", description = "Невозможно обработать запрос")
+@JsonTypeName("Conflict")
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
-public class BadRequestApi {
+public class ConflictApi {
 
   private JsonNullable<Object> message = JsonNullable.<Object>undefined();
 
@@ -32,21 +32,21 @@ public class BadRequestApi {
 
   private JsonNullable<Object> traceId = JsonNullable.<Object>undefined();
 
-  public BadRequestApi() {
+  public ConflictApi() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public BadRequestApi(Object message, Object type, Object code, Object traceId) {
+  public ConflictApi(Object message, Object type, Object code, Object traceId) {
     this.message = JsonNullable.of(message);
     this.type = JsonNullable.of(type);
     this.code = JsonNullable.of(code);
     this.traceId = JsonNullable.of(traceId);
   }
 
-  public BadRequestApi message(Object message) {
+  public ConflictApi message(Object message) {
     this.message = JsonNullable.of(message);
     return this;
   }
@@ -66,7 +66,7 @@ public class BadRequestApi {
     this.message = message;
   }
 
-  public BadRequestApi type(Object type) {
+  public ConflictApi type(Object type) {
     this.type = JsonNullable.of(type);
     return this;
   }
@@ -86,7 +86,7 @@ public class BadRequestApi {
     this.type = type;
   }
 
-  public BadRequestApi code(Object code) {
+  public ConflictApi code(Object code) {
     this.code = JsonNullable.of(code);
     return this;
   }
@@ -106,7 +106,7 @@ public class BadRequestApi {
     this.code = code;
   }
 
-  public BadRequestApi traceId(Object traceId) {
+  public ConflictApi traceId(Object traceId) {
     this.traceId = JsonNullable.of(traceId);
     return this;
   }
@@ -134,11 +134,11 @@ public class BadRequestApi {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    BadRequestApi badRequest = (BadRequestApi) o;
-    return Objects.equals(this.message, badRequest.message) &&
-        Objects.equals(this.type, badRequest.type) &&
-        Objects.equals(this.code, badRequest.code) &&
-        Objects.equals(this.traceId, badRequest.traceId);
+    ConflictApi conflict = (ConflictApi) o;
+    return Objects.equals(this.message, conflict.message) &&
+        Objects.equals(this.type, conflict.type) &&
+        Objects.equals(this.code, conflict.code) &&
+        Objects.equals(this.traceId, conflict.traceId);
   }
 
   @Override
@@ -149,7 +149,7 @@ public class BadRequestApi {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class BadRequestApi {\n");
+    sb.append("class ConflictApi {\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    code: ").append(toIndentedString(code)).append("\n");

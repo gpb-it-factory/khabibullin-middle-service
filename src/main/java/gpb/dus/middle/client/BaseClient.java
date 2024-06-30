@@ -1,26 +1,28 @@
 package gpb.dus.middle.client;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
 public abstract class BaseClient {
 
-    protected final RestTemplate rest;
+    protected final RestClient rest;
 
-    protected BaseClient(RestTemplate rest) {
+    protected BaseClient(RestClient rest) {
         this.rest = rest;
     }
 
     protected ResponseEntity<Object> get(String path) {
         return makeAndSendRequest(HttpMethod.GET, path, null);
+    }
+
+    protected <T> List<T> getList(String path, ParameterizedTypeReference<List<T>> type) {
+        return makeAndSendRequestForList(path, type);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
@@ -30,22 +32,30 @@ public abstract class BaseClient {
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method,
                                                           String path,
                                                           @Nullable T body) {
-        HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
 
         ResponseEntity<Object> backendServiceResponse;
+
         try {
-            backendServiceResponse = rest.exchange(path, method, requestEntity, Object.class);
+            if (body == null) {
+                backendServiceResponse = rest.method(method)
+                        .uri(path)
+                        .retrieve()
+                        .toEntity(Object.class);
+            } else {
+                backendServiceResponse = rest.method(method)
+                        .uri(path)
+                        .body(body)
+                        .retrieve()
+                        .toEntity(Object.class);
+            }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
         return manageMiddleServiceResponse(backendServiceResponse);
     }
 
-    private HttpHeaders defaultHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        return headers;
+    private <T> List<T> makeAndSendRequestForList(String path, ParameterizedTypeReference<List<T>> type) {
+        return rest.get().uri(path).retrieve().toEntity(type).getBody();
     }
 
     private ResponseEntity<Object> manageMiddleServiceResponse(ResponseEntity<Object> middleServiceResponse) {

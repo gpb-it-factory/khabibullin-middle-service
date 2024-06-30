@@ -6,9 +6,9 @@
 package gpb.dus.middle.api.generated;
 
 import gpb.dus.middle.api.generated.model.BadRequestApi;
+import gpb.dus.middle.api.generated.model.ConflictApi;
 import gpb.dus.middle.api.generated.model.CreateUserRequestV2Api;
 import gpb.dus.middle.api.generated.model.ErrorV2Api;
-import gpb.dus.middle.api.generated.model.UnprocessableEntityApi;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,52 +30,51 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-23T18:03:21.394341351+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 @Validated
 @Tag(name = "users", description = "Операции с пользователями")
 public interface UsersResource {
 
     /**
-     * POST /v2/users : Создать нового пользователя (v2)
+     * POST /middle/v2/users : Создать нового пользователя (v2)
      *
-     * @param createUserRequestV2Api (required)
+     * @param createUserRequestV2Api  (required)
      * @return Пользователь создан (status code 204)
-     * or Некорректный запрос (status code 400)
-     * or Пользователь уже зарегистрирован (status code 409)
-     * or Непредвиденная ошибка (status code 200)
+     *         or Некорректный запрос (status code 400)
+     *         or Пользователь уже зарегистрирован (status code 409)
+     *         or Непредвиденная ошибка (status code 200)
      */
     @Operation(
-            operationId = "createUserV2",
-            summary = "Создать нового пользователя (v2)",
-            tags = {"users"},
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "Пользователь создан"),
-                    @ApiResponse(responseCode = "400", description = "Некорректный запрос", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestApi.class))
-                    }),
-                    @ApiResponse(responseCode = "409", description = "Пользователь уже зарегистрирован", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = UnprocessableEntityApi.class))
-                    }),
-                    @ApiResponse(responseCode = "default", description = "Непредвиденная ошибка", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorV2Api.class))
-                    })
-            }
+        operationId = "createUserV2",
+        summary = "Создать нового пользователя (v2)",
+        tags = { "users" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Пользователь создан"),
+            @ApiResponse(responseCode = "400", description = "Некорректный запрос", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestApi.class))
+            }),
+            @ApiResponse(responseCode = "409", description = "Пользователь уже зарегистрирован", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ConflictApi.class))
+            }),
+            @ApiResponse(responseCode = "default", description = "Непредвиденная ошибка", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorV2Api.class))
+            })
+        }
     )
     @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/v2/users",
-            produces = {"application/json"},
-            consumes = {"application/json"}
+        method = RequestMethod.POST,
+        value = "/middle/v2/users",
+        produces = { "application/json" },
+        consumes = { "application/json" }
     )
+    
     ResponseEntity<Void> createUserV2(
-            @Parameter(name = "CreateUserRequestV2Api", description = "", required = true) @Valid @RequestBody CreateUserRequestV2Api createUserRequestV2Api
+        @Parameter(name = "CreateUserRequestV2Api", description = "", required = true) @Valid @RequestBody CreateUserRequestV2Api createUserRequestV2Api
     );
 
 }

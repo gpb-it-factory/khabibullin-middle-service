@@ -1,7 +1,8 @@
 package gpb.dus.middle.exception;
 
+import gpb.dus.middle.exception.model.ConflictException;
 import gpb.dus.middle.exception.model.ErrorV2;
-import gpb.dus.middle.exception.model.UnprocessableEntity;
+import gpb.dus.middle.exception.model.UnauthorizedException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -98,13 +99,26 @@ public class MiddleServiceExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(code = HttpStatus.CONFLICT)
-    public ErrorV2 handleMissingServletRequestParameterException(final UnprocessableEntity e) {
+    public ErrorV2 handleMissingServletRequestParameterException(final ConflictException e) {
         UUID traceId = UUID.randomUUID();
         log.warn("[HTTP STATUS 409] {} with traceId {}", e.getMessage(), traceId, e);
 
         return makeErrorResponse(e,
                 HttpStatus.CONFLICT.getReasonPhrase(),
                 HttpStatus.CONFLICT.value(),
+                traceId
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public ErrorV2 handleUnauthorizedException(final UnauthorizedException e) {
+        UUID traceId = UUID.randomUUID();
+        log.warn("[HTTP STATUS 401] {} with traceId {}", e.getMessage(), traceId, e);
+
+        return makeErrorResponse(e,
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                HttpStatus.UNAUTHORIZED.value(),
                 traceId
         );
     }
