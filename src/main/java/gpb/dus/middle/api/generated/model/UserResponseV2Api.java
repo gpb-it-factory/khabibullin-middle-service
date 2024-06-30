@@ -22,7 +22,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "UserResponseV2", description = "Информация о пользователе (V2)")
 @JsonTypeName("UserResponseV2")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 public class UserResponseV2Api {
 
   private UUID userId;

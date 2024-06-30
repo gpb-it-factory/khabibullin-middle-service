@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "CreateUserRequestV2", description = "Запрос на создание нового пользователя (V2)")
 @JsonTypeName("CreateUserRequestV2")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 public class CreateUserRequestV2Api {
 
   private Long userId;

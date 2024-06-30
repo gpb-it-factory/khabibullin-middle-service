@@ -6,6 +6,7 @@ import gpb.dus.middle.client.BaseClient;
 import gpb.dus.middle.exception.model.ConflictException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +39,10 @@ public class AccountClient extends BaseClient {
         List<Account> accounts;
 
         try {
-            accounts = getList("/" + tgUserId + "/accounts");
+            accounts = getList("/" + tgUserId + "/accounts", new ParameterizedTypeReference<List<Account>> () {});
         } catch (Exception e) {
             throw new RuntimeException("Непредвиденная ошибка");
         }
-
         return accounts;
     }
 

@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "Unauthorized", description = "Пользователь не найден")
 @JsonTypeName("Unauthorized")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 public class UnauthorizedApi {
 
   private JsonNullable<Object> message = JsonNullable.<Object>undefined();

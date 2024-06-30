@@ -84,7 +84,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorV2'
-
+  /middle/v2/users/{id}/accounts/balance:
+    get:
+      operationId: getUserAccountBalance
+      summary: Получить баланс счёта пользователя
+      tags: [ accounts ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 356789
+          description: Идентификатор пользователя в Telegram
+      responses:
+        '200':
+          description: Список счетов пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '401':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        default:
+          description: Непредвиденная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorV2'
 components:
   schemas:
     CreateUserRequestV2:
@@ -128,23 +160,27 @@ components:
       type: array
       description: Список счетов пользователя (V2)
       items:
-        type: object
-        properties:
-          accountId:
-            type: string
-            format: uuid
-            example: 52d2ef91-0b62-4d43-bb56-e7ec542ba8f8
-          accountName:
+        allOf:
+          - $ref: '#/components/schemas/AccountResponse'
+    AccountResponse:
+      type: object
+      description: Информация о счёте пользователя
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          example: 52d2ef91-0b62-4d43-bb56-e7ec542ba8f8
+        accountName:
             type: string
             example: 'Деньги на шашлык'
-          amount:
+        amount:
             type: string
             format: number
             example: '203605.20'
-        required:
-          - accountId
-          - accountName
-          - amount
+      required:
+        - accountId
+        - accountName
+        - amount
     ErrorV2:
       type: object
       description: Формат непредвиденной ошибки (V2)

@@ -21,8 +21,8 @@ public abstract class BaseClient {
         return makeAndSendRequest(HttpMethod.GET, path, null);
     }
 
-    protected <T> List<T> getList(String path) {
-        return makeAndSendRequestForList(path);
+    protected <T> List<T> getList(String path, ParameterizedTypeReference<List<T>> type) {
+        return makeAndSendRequestForList(path, type);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
@@ -54,9 +54,8 @@ public abstract class BaseClient {
         return manageMiddleServiceResponse(backendServiceResponse);
     }
 
-    private <T> List<T> makeAndSendRequestForList(String path) {
-        return rest.get().uri(path).retrieve().toEntity(new ParameterizedTypeReference<List<T>>() {
-        }).getBody();
+    private <T> List<T> makeAndSendRequestForList(String path, ParameterizedTypeReference<List<T>> type) {
+        return rest.get().uri(path).retrieve().toEntity(type).getBody();
     }
 
     private ResponseEntity<Object> manageMiddleServiceResponse(ResponseEntity<Object> middleServiceResponse) {

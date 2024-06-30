@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "BadRequest", description = "Некорректные параметры запроса")
 @JsonTypeName("BadRequest")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 public class BadRequestApi {
 
   private JsonNullable<Object> message = JsonNullable.<Object>undefined();

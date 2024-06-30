@@ -18,12 +18,13 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * AccountsListResponseV2InnerApi
+ * Информация о счёте пользователя
  */
 
-@JsonTypeName("AccountsListResponseV2_inner")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
-public class AccountsListResponseV2InnerApi {
+@Schema(name = "AccountResponse", description = "Информация о счёте пользователя")
+@JsonTypeName("AccountResponse")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
+public class AccountResponseApi {
 
   private UUID accountId;
 
@@ -31,20 +32,20 @@ public class AccountsListResponseV2InnerApi {
 
   private BigDecimal amount;
 
-  public AccountsListResponseV2InnerApi() {
+  public AccountResponseApi() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public AccountsListResponseV2InnerApi(UUID accountId, String accountName, BigDecimal amount) {
+  public AccountResponseApi(UUID accountId, String accountName, BigDecimal amount) {
     this.accountId = accountId;
     this.accountName = accountName;
     this.amount = amount;
   }
 
-  public AccountsListResponseV2InnerApi accountId(UUID accountId) {
+  public AccountResponseApi accountId(UUID accountId) {
     this.accountId = accountId;
     return this;
   }
@@ -64,7 +65,7 @@ public class AccountsListResponseV2InnerApi {
     this.accountId = accountId;
   }
 
-  public AccountsListResponseV2InnerApi accountName(String accountName) {
+  public AccountResponseApi accountName(String accountName) {
     this.accountName = accountName;
     return this;
   }
@@ -84,7 +85,7 @@ public class AccountsListResponseV2InnerApi {
     this.accountName = accountName;
   }
 
-  public AccountsListResponseV2InnerApi amount(BigDecimal amount) {
+  public AccountResponseApi amount(BigDecimal amount) {
     this.amount = amount;
     return this;
   }
@@ -112,10 +113,10 @@ public class AccountsListResponseV2InnerApi {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AccountsListResponseV2InnerApi accountsListResponseV2Inner = (AccountsListResponseV2InnerApi) o;
-    return Objects.equals(this.accountId, accountsListResponseV2Inner.accountId) &&
-        Objects.equals(this.accountName, accountsListResponseV2Inner.accountName) &&
-        Objects.equals(this.amount, accountsListResponseV2Inner.amount);
+    AccountResponseApi accountResponse = (AccountResponseApi) o;
+    return Objects.equals(this.accountId, accountResponse.accountId) &&
+        Objects.equals(this.accountName, accountResponse.accountName) &&
+        Objects.equals(this.amount, accountResponse.amount);
   }
 
   @Override
@@ -126,7 +127,7 @@ public class AccountsListResponseV2InnerApi {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class AccountsListResponseV2InnerApi {\n");
+    sb.append("class AccountResponseApi {\n");
     sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
     sb.append("    accountName: ").append(toIndentedString(accountName)).append("\n");
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");

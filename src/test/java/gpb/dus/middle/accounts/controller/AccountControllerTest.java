@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
@@ -30,6 +31,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static gpb.dus.middle.accounts.client.AccountClient.ACCOUNTS_API_PREFIX;
 import static gpb.dus.middle.users.client.UserClient.USERS_API_PREFIX;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -127,6 +130,87 @@ class AccountControllerTest {
                         status().isConflict()
                 );
     }
+
+    @DisplayName("Should return account with balance when correct user account balance is requested")
+    @Test
+    void When_Correct_Get_Account_Balance_Request_Than_Return_Account() throws Exception {
+
+        String tgUserId = "123";
+
+        Account testAccount = getTestAccount( UUID.randomUUID(), "test_name", "5000");
+
+        stubFor(get(urlEqualTo(USERS_API_PREFIX + "/" + tgUserId))
+                .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
+
+        stubFor(get(urlEqualTo(ACCOUNTS_API_PREFIX + "/" + tgUserId + "/accounts"))
+                .willReturn(okJson(asJsonString(List.of(testAccount)))));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:7777/middle/v2/users/" + tgUserId + "/accounts/balance"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId", containsString(testAccount.accountId())))
+                .andExpect(jsonPath("$.accountName").value(testAccount.accountName()))
+                .andExpect(jsonPath("$.amount").value(testAccount.amount()));
+    }
+
+    @DisplayName("Should error when user account balance is requested fo user with more than one accounts")
+    @Test
+    void When_User_Have_More_Than_One_Account_Than_Return_Error() throws Exception {
+
+        String tgUserId = "123";
+
+        Account testAccount = getTestAccount( UUID.randomUUID(), "test_name", "5000");
+        Account testAccount2 = getTestAccount( UUID.randomUUID(), "test_name_2", "5000");
+
+        stubFor(get(urlEqualTo(USERS_API_PREFIX + "/" + tgUserId))
+                .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
+
+        stubFor(get(urlEqualTo(ACCOUNTS_API_PREFIX + "/" + tgUserId + "/accounts"))
+                .willReturn(okJson(asJsonString(List.of(testAccount, testAccount2)))));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:7777/middle/v2/users/" + tgUserId + "/accounts/balance"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @DisplayName("Should error when user account balance is requested fo user with no accounts")
+    @Test
+    void When_User_Have_No_Accounts_Than_Return_Error() throws Exception {
+
+        String tgUserId = "123";
+
+        stubFor(get(urlEqualTo(USERS_API_PREFIX + "/" + tgUserId))
+                .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
+
+        stubFor(get(urlEqualTo(ACCOUNTS_API_PREFIX + "/" + tgUserId + "/accounts"))
+                .willReturn(okJson(asJsonString(Collections.emptyList()))));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:7777/middle/v2/users/" + tgUserId + "/accounts/balance"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @DisplayName("Should error account with balance when user is not registered")
+    @Test
+    void When_User_Is_Not_Registered_Account_Than_Return_Error() throws Exception {
+
+        String tgUserId = "123";
+
+        Account testAccount = getTestAccount( UUID.randomUUID(), "test_name", "5555");
+
+        stubFor(get(urlEqualTo(USERS_API_PREFIX + "/" + tgUserId))
+                .willReturn(aResponse().withStatus(HttpStatus.UNAUTHORIZED.value())));
+
+        stubFor(get(urlEqualTo(ACCOUNTS_API_PREFIX + "/" + tgUserId + "/accounts"))
+                .willReturn(okJson(asJsonString(List.of(testAccount)))));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:7777/middle/v2/users/" + tgUserId + "/accounts/balance"))
+                .andExpect(status().isUnauthorized());
+    }
+
+
+
+    private static Account getTestAccount(UUID testAccountId, String testAccountName, String testAccountAmount) {
+        return new Account(testAccountId.toString(), testAccountName, testAccountAmount);
+    }
+
 
     public static String asJsonString(final Object obj) {
         try {

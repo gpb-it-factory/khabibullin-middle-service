@@ -5,6 +5,7 @@
  */
 package gpb.dus.middle.api.generated;
 
+import gpb.dus.middle.api.generated.model.AccountResponseApi;
 import gpb.dus.middle.api.generated.model.ConflictApi;
 import gpb.dus.middle.api.generated.model.CreateAccountRequestV2Api;
 import gpb.dus.middle.api.generated.model.ErrorV2Api;
@@ -35,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-29T01:00:08.524498054+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-06-30T20:45:34.201097068+03:00[Europe/Moscow]")
 @Validated
 @Tag(name = "accounts", description = "Операции со счетами пользователей")
 public interface AccountsResource {
@@ -77,6 +78,41 @@ public interface AccountsResource {
     ResponseEntity<Void> createUserAccountV2(
         @Parameter(name = "id", description = "Идентификатор пользователя в Telegram", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id,
         @Parameter(name = "CreateAccountRequestV2Api", description = "", required = true) @Valid @RequestBody CreateAccountRequestV2Api createAccountRequestV2Api
+    );
+
+
+    /**
+     * GET /middle/v2/users/{id}/accounts/balance : Получить баланс счёта пользователя
+     *
+     * @param id Идентификатор пользователя в Telegram (required)
+     * @return Список счетов пользователя (status code 200)
+     *         or Пользователь не найден (status code 401)
+     *         or Непредвиденная ошибка (status code 200)
+     */
+    @Operation(
+        operationId = "getUserAccountBalance",
+        summary = "Получить баланс счёта пользователя",
+        tags = { "accounts" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Список счетов пользователя", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AccountResponseApi.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "Пользователь не найден", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = UnauthorizedApi.class))
+            }),
+            @ApiResponse(responseCode = "default", description = "Непредвиденная ошибка", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorV2Api.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/middle/v2/users/{id}/accounts/balance",
+        produces = { "application/json" }
+    )
+    
+    ResponseEntity<AccountResponseApi> getUserAccountBalance(
+        @Parameter(name = "id", description = "Идентификатор пользователя в Telegram", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id
     );
 
 }
